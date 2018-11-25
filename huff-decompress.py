@@ -56,7 +56,7 @@ for ab in bytes:
             huffman.reset()
         if length_r >=length:
             break
-print(bin(bytes[-1]))
+# print(bin(bytes[-1]))
 with open(out_file, 'w') as f:
     f.write(recover_file)
 # print(l) # 4955339 #5522880 5522874
