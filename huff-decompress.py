@@ -18,18 +18,18 @@ class Huffman_model:
 
 #---------------main----------------------------
 
-# parser = argparse.ArgumentParser()
-# parser.add_argument('bin', type=str, help="the compression file XXXX.bin")
-# args = parser.parse_args()
-#
-# if 'bin' in args:
-#     bin_file = args.bin
-#     plk_file = bin_file[:bin_file.find('.bin')] + '.plk'
-# else:
-#     sys.exit()
-bin_file = 'infile.txt.bin'
-plk_file = bin_file[:bin_file.find('.bin')] + '.plk'
-out_file = bin_file[:bin_file.find('.bin')] + '.out'
+parser = argparse.ArgumentParser()
+parser.add_argument('bin', type=str, help="the compression file XXXX.bin")
+args = parser.parse_args()
+
+if 'bin' in args:
+    bin_file = args.bin
+    plk_file = bin_file[:bin_file.find('.bin')] + '.plk'
+else:
+    sys.exit()
+# bin_file = 'infile.txt.bin'
+plk_file = bin_file[:bin_file.find('.bin')] + '-symbol-model.pkl'
+out_file = bin_file[:bin_file.find('.bin')] + '-decompressed.txt'
 length = 0
 model = {}
 with open(plk_file, 'rb') as f:
@@ -56,7 +56,5 @@ for ab in bytes:
             huffman.reset()
         if length_r >=length:
             break
-# print(bin(bytes[-1]))
 with open(out_file, 'w') as f:
     f.write(recover_file)
-# print(l) # 4955339 #5522880 5522874
