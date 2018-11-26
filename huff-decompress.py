@@ -1,6 +1,6 @@
 import array, argparse,time, pickle,sys
 
-
+start = time.clock()
 class Huffman_model:
     def __init__(self, model):
         self.model = model
@@ -27,7 +27,7 @@ if 'bin' in args:
     plk_file = bin_file[:bin_file.find('.bin')] + '.plk'
 else:
     sys.exit()
-# bin_file = 'infile.txt.bin'
+
 plk_file = bin_file[:bin_file.find('.bin')] + '-symbol-model.pkl'
 out_file = bin_file[:bin_file.find('.bin')] + '-decompressed.txt'
 length = 0
@@ -58,3 +58,5 @@ for ab in bytes:
             break
 with open(out_file, 'w') as f:
     f.write(recover_file)
+
+print('Cost of whole process of Decompress: %.2fs'%(time.clock()-start))

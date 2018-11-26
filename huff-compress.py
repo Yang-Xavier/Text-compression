@@ -1,7 +1,4 @@
-import array, argparse, re,time, pickle,sys
-
-start = time.clock()
-
+import array, argparse, re,time, pickle,sys, copy
 
 def build_huffman(terms):
     result = {}
@@ -11,17 +8,37 @@ def build_huffman(terms):
             return
         iterate(code+'0',tree['0'])
         iterate(code+'1',tree['1'])
-    while (len(terms) != 1):
-        while (len(terms) != 1) :
-            min1 = terms[0]
-            min2 = terms[1]
-            terms.insert(2,({'0':min1[0],'1':min2[0]}, min1[1]+min2[1]))
-            del terms[0]
-            del terms[0]
-            terms = sorted(terms, key=lambda x:x[1])
+
+    while (len(terms) !=10) :
+        min1 = terms[0]
+        min2 = terms[1]
+        i = 0
+        new_term = ({'0':copy.deepcopy(min1[0]),'1':copy.deepcopy(min2[0])}, min1[1]+min2[1])
+        for t in terms:
+            if new_term[1] < t[1]:
+                terms.insert(i,new_term)
+                break
+            i+=1
+        del terms[0]
+        del terms[0]
+    while (len(terms) !=1) :
+        min1 = terms[0]
+        min2 = terms[1]
+        del terms[0]
+        del terms[0]
+        new_term = ({'0':copy.deepcopy(min1[0]),'1':copy.deepcopy(min2[0])}, min1[1]+min2[1])
+        terms.append(new_term)
+        terms = sorted(terms, key=lambda x:x[1])
     iterate('',terms[0][0])
     return result, terms[0][0]
 
+def insert_term(terms, insert):
+    terms_ = terms
+    for i in range(len(terms_)):
+        if terms_[i][1] >= insert[1]:
+            terms_.insert(i, insert)
+            break
+    return terms_
 
 def convert_binary(huff_str):
     data = array.array('B')
@@ -34,7 +51,7 @@ def convert_binary(huff_str):
     return data,length
 
 
-def store(file_path,huff_str, model):
+def store(huff_str, model):
     data, length = convert_binary(huff_str)
     with open(bin_path,"wb") as f:
         data.tofile(f)
@@ -55,6 +72,7 @@ def format_data(init_data):
 
 
 # ________main__________
+start = time.clock()
 parser = argparse.ArgumentParser()
 parser.add_argument('-s', type=str, help='Symbol')
 parser.add_argument('input', type=str, help="Input file")
@@ -68,10 +86,6 @@ if "s" in args and "input" in args:
     text = ""
 else:
         sys.exit()
-
-# symbol = 'word'
-# file_path  =  'infile.txt'
-# text = ""
 
 with open(file_path) as f:
     text = f.read()
@@ -87,7 +101,10 @@ if symbol == 'word':
     term_array = format_data(word_r+symbol_r)
 # term_array is the frequency of each term in the text
 term_array = sorted(term_array.items(), key=lambda c: c[1])
-terms_huffman, huffman_model =build_huffman(term_array)
+terms_huffman, huffman_model = build_huffman(term_array)
+
+print("Cost of building model:  %.2fs" %  (time.clock()-start))
+start = time.clock()
 
 huff_str = ""
 if symbol == "char":
@@ -106,5 +123,5 @@ if symbol == "word":
                 term = ''
             else:
                 huff_str += terms_huffman[c]
-store(file_path, huff_str, huffman_model)
-print('%.2f'%(time.clock()-start))
+print('Cost of encoding: %.2fs'%(time.clock()-start))
+store( huff_str, huffman_model)
