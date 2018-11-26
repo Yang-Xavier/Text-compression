@@ -19,8 +19,9 @@ def build_huffman(terms):
                 terms.insert(i,new_term)
                 break
             i+=1
-        del terms[0]
-        del terms[0]
+        terms.remove(min1)
+        terms.remove(min2)
+
     while (len(terms) !=1) :
         min1 = terms[0]
         min2 = terms[1]
