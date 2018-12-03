@@ -21,7 +21,8 @@ def build_huffman(terms):
             i+=1
         terms.remove(min1)
         terms.remove(min2)
-
+    # there is a little problem about using insert and remove at same time when the length is lower than 10
+    # so I separately write the method when the length lower than 10
     while (len(terms) !=1) :
         min1 = terms[0]
         min2 = terms[1]
